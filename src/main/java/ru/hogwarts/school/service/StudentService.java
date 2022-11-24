@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.StudentRepository;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 @Service
@@ -26,7 +25,7 @@ public class StudentService {
     }
 
     public Student editStudent(Student student) {
-        if (studentRepository.existsById(student.getId())){
+        if (studentRepository.existsById(student.getId())) {
             return studentRepository.save(student);
         }
         return null;
@@ -37,13 +36,7 @@ public class StudentService {
     }
 
     public Collection<Student> findByAge(int age) {
-        ArrayList<Student> result = new ArrayList<>();
-        for (Student student : studentRepository.findAll()) {
-            if (student.getAge() == age) {
-                result.add(student);
-            }
-        }
-        return result;
+        return studentRepository.findByAge(age);
     }
 
 }
