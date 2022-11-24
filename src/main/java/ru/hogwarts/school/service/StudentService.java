@@ -17,18 +17,22 @@ public class StudentService {
     }
 
     public Student addStudent(Student student) {
+        student.setId(null);
         return studentRepository.save(student);
     }
 
-    public Student findStudent(long id) {
+    public Student findStudent(Long id) {
         return studentRepository.getReferenceById(id);
     }
 
     public Student editStudent(Student student) {
-        return studentRepository.save(student);
+        if (studentRepository.existsById(student.getId())){
+            return studentRepository.save(student);
+        }
+        return null;
     }
 
-    public void deleteStudent(long id) {
+    public void deleteStudent(Long id) {
         studentRepository.deleteById(id);
     }
 

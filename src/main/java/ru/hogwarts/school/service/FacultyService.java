@@ -18,15 +18,19 @@ public class FacultyService {
     }
 
     public Faculty addFaculty(Faculty faculty) {
+        faculty.setId(null);
         return facultyRepository.save(faculty);
     }
 
-    public Faculty findFaculty(long id) {
+    public Faculty findFaculty(Long id) {
         return facultyRepository.getReferenceById(id);
     }
 
     public Faculty editFaculty(Faculty faculty) {
-        return facultyRepository.save(faculty);
+        if (facultyRepository.existsById(faculty.getId())) {
+            return facultyRepository.save(faculty);
+        }
+        return null;
     }
 
     public void deleteFaculty(Long id) {
