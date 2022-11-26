@@ -3,26 +3,38 @@ package ru.hogwarts.school.service;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.component.RecordMapper;
 import ru.hogwarts.school.exception.StudentNotFoundException;
+import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
+import ru.hogwarts.school.record.FacultyRecord;
 import ru.hogwarts.school.record.StudentRecord;
+import ru.hogwarts.school.repository.FacultyRepository;
 import ru.hogwarts.school.repository.StudentRepository;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class StudentService {
 
     private final StudentRepository studentRepository;
+    private final FacultyRepository facultyRepository;
     private final RecordMapper recordMapper;
 
-    public StudentService(StudentRepository studentRepository, RecordMapper recordMapper) {
+    public StudentService(StudentRepository studentRepository, FacultyRepository facultyRepository, RecordMapper recordMapper) {
         this.studentRepository = studentRepository;
+        this.facultyRepository = facultyRepository;
         this.recordMapper = recordMapper;
     }
 
     public StudentRecord addStudent(StudentRecord studentRecord) {
-        return recordMapper.toRecord(studentRepository.save(recordMapper.toEntity(studentRecord)));
+        Student student = recordMapper.toEntity(studentRecord);
+        Faculty faculty = Optional.ofNullable(studentRecord.getFaculty())
+                .map(FacultyRecord::getId)
+                .flatMap(facultyRepository::findById)
+                .orElse(null);
+        student.setFaculty(faculty);
+        return recordMapper.toRecord(studentRepository.save(student));
     }
 
     public StudentRecord findStudent(Long id) {
@@ -48,4 +60,14 @@ public class StudentService {
                 .collect(Collectors.toList());
     }
 
+    public Collection<StudentRecord> findByAgeBetween(int minAge, int maxAge) {
+        return studentRepository.findAllByAgeBetween(minAge, maxAge)
+                .stream()
+                .map(recordMapper::toRecord)
+                .collect(Collectors.toList());
+    }
+
+    public FacultyRecord findFacultyByStudent(long id) {
+        return findStudent(id).getFaculty();
+    }
 }

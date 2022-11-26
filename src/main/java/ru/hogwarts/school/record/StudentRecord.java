@@ -11,6 +11,7 @@ public class StudentRecord {
     @Min(value = 17)
     @Max(value = 25)
     private int age;
+    private FacultyRecord faculty;
 
     public Long getId() {
         return id;
@@ -34,5 +35,13 @@ public class StudentRecord {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    public FacultyRecord getFaculty() {
+        return faculty;
+    }
+
+    public void setFaculty(FacultyRecord faculty) {
+        this.faculty = faculty;
     }
 }
