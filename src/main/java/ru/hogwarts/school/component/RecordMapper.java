@@ -1,8 +1,11 @@
 package ru.hogwarts.school.component;
 
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
+import ru.hogwarts.school.model.Avatar;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
+import ru.hogwarts.school.record.AvatarRecord;
 import ru.hogwarts.school.record.FacultyRecord;
 import ru.hogwarts.school.record.StudentRecord;
 
@@ -14,6 +17,9 @@ public class RecordMapper {
         studentRecord.setId(student.getId());
         studentRecord.setName(student.getName());
         studentRecord.setAge(student.getAge());
+        if (student.getFaculty() != null){
+            studentRecord.setFaculty(toRecord(student.getFaculty()));
+        }
         return studentRecord;
     }
 
@@ -25,10 +31,21 @@ public class RecordMapper {
         return facultyRecord;
     }
 
+    public AvatarRecord toRecord(Avatar avatar){
+        AvatarRecord avatarRecord = new AvatarRecord();
+        avatarRecord.setId(avatar.getId());
+        avatarRecord.setMediaType(avatar.getMediaType());
+        avatarRecord.setUrl("http://localhost:8080/avatars/" + avatar.getId() + "/from-db");
+        return avatarRecord;
+    }
+
     public Student toEntity(StudentRecord studentRecord) {
         Student student = new Student();
         student.setName(studentRecord.getName());
         student.setAge(studentRecord.getAge());
+        if (studentRecord.getFaculty() != null){
+            student.setFaculty(toEntity(studentRecord.getFaculty()));
+        }
         return student;
     }
 

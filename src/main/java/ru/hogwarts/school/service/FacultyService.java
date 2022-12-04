@@ -5,6 +5,7 @@ import ru.hogwarts.school.component.RecordMapper;
 import ru.hogwarts.school.exception.FacultyNotFoundException;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.record.FacultyRecord;
+import ru.hogwarts.school.record.StudentRecord;
 import ru.hogwarts.school.repository.FacultyRepository;
 
 import java.util.Collection;
@@ -43,6 +44,21 @@ public class FacultyService {
 
     public Collection<FacultyRecord> findByColor(String color) {
         return facultyRepository.findByColor(color)
+                .stream()
+                .map(recordMapper::toRecord)
+                .collect(Collectors.toList());
+    }
+
+    public Collection<FacultyRecord> findByNameOrColor(String colorOrName) {
+        return facultyRepository.findAllByColorIgnoreCaseOrNameIgnoreCase(colorOrName, colorOrName)
+                .stream()
+                .map(recordMapper::toRecord)
+                .collect(Collectors.toList());
+    }
+
+    public Collection<StudentRecord> findStudentByFaculty(long id) {
+        return facultyRepository.findById(id).orElseThrow(() -> new FacultyNotFoundException(id))
+                .getStudents()
                 .stream()
                 .map(recordMapper::toRecord)
                 .collect(Collectors.toList());
