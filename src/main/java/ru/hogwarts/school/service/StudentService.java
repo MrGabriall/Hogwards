@@ -1,5 +1,6 @@
 package ru.hogwarts.school.service;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.component.RecordMapper;
 import ru.hogwarts.school.exception.StudentNotFoundException;
@@ -16,6 +17,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class StudentService {
+
+    @Value("{avatars.dir.path}")
+    private String avatarsDir;
 
     private final StudentRepository studentRepository;
     private final FacultyRepository facultyRepository;
