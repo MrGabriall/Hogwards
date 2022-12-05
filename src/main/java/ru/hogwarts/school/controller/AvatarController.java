@@ -9,6 +9,7 @@ import ru.hogwarts.school.record.AvatarRecord;
 import ru.hogwarts.school.service.AvatarService;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/avatars")
@@ -39,10 +40,16 @@ public class AvatarController {
         return read(pair);
     }
 
-    private ResponseEntity<byte[]> read(Pair<byte[], String> pair){
+    private ResponseEntity<byte[]> read(Pair<byte[], String> pair) {
         return ResponseEntity.ok()
                 .contentLength(pair.getFirst().length)
                 .contentType(MediaType.parseMediaType(pair.getSecond()))
                 .body(pair.getFirst());
+    }
+
+    @GetMapping
+    public List<AvatarRecord> findByPagination(@RequestParam int age,
+                                               @RequestParam int size) {
+        return avatarService.findByPagination(age, size);
     }
 }

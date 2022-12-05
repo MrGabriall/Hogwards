@@ -1,15 +1,20 @@
 package ru.hogwarts.school.controller;
 
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school.record.FacultyRecord;
 import ru.hogwarts.school.record.StudentRecord;
 import ru.hogwarts.school.service.StudentService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping("/student")
+@Validated
 public class StudentController {
     private final StudentService studentService;
 
@@ -50,5 +55,20 @@ public class StudentController {
     @GetMapping("/{id}/faculty")
     public FacultyRecord findFacultyByStudent(@PathVariable long id){
         return studentService.findFacultyByStudent(id);
+    }
+
+    @GetMapping("/totalCount")
+    public int totalCountOfStudents(){
+        return studentService.totalCountOfStudents();
+    }
+
+    @GetMapping("/averageAge")
+    public double averageAgeOfStudents(){
+        return studentService.averageAgeOfStudents();
+    }
+
+    @GetMapping("/lstStudents")
+    public List<StudentRecord> lastStudents(@RequestParam @Min(1) @Max(5) int count){
+        return studentService.lastStudents(count);
     }
 }
