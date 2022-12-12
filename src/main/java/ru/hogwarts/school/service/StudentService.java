@@ -1,5 +1,7 @@
 package ru.hogwarts.school.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.component.RecordMapper;
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
 @Service
 public class StudentService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(StudentService.class);
     @Value("{avatars.dir.path}")
     private String avatarsDir;
 
@@ -33,6 +36,7 @@ public class StudentService {
     }
 
     public StudentRecord addStudent(StudentRecord studentRecord) {
+        LOGGER.debug("Method addFaculty was invoked");
         Student student = recordMapper.toEntity(studentRecord);
         Faculty faculty = Optional.ofNullable(studentRecord.getFaculty())
                 .map(FacultyRecord::getId)
@@ -43,10 +47,12 @@ public class StudentService {
     }
 
     public StudentRecord findStudent(Long id) {
+        LOGGER.debug("Method findStudent was invoked");
         return recordMapper.toRecord(studentRepository.findById(id).orElseThrow(() -> new StudentNotFoundException(id)));
     }
 
     public StudentRecord editStudent(Long id, StudentRecord studentRecord) {
+        LOGGER.debug("Method editStudent was invoked");
         Student oldStudent = studentRepository.findById(id).orElseThrow(() -> new StudentNotFoundException(id));
         oldStudent.setName(studentRecord.getName());
         oldStudent.setAge(studentRecord.getAge());
@@ -54,11 +60,13 @@ public class StudentService {
     }
 
     public void deleteStudent(Long id) {
+        LOGGER.debug("Method deleteStudent was invoked");
         Student student = studentRepository.findById(id).orElseThrow(() -> new StudentNotFoundException(id));
         studentRepository.delete(student);
     }
 
     public Collection<StudentRecord> findByAge(int age) {
+        LOGGER.debug("Method findByAge was invoked");
         return studentRepository.findByAge(age)
                 .stream()
                 .map(recordMapper::toRecord)
@@ -66,6 +74,7 @@ public class StudentService {
     }
 
     public Collection<StudentRecord> findByAgeBetween(int minAge, int maxAge) {
+        LOGGER.debug("Method findByAgeBetween was invoked");
         return studentRepository.findAllByAgeBetween(minAge, maxAge)
                 .stream()
                 .map(recordMapper::toRecord)
@@ -73,18 +82,22 @@ public class StudentService {
     }
 
     public FacultyRecord findFacultyByStudent(long id) {
+        LOGGER.debug("Method findFacultyByStudent was invoked");
         return findStudent(id).getFaculty();
     }
 
     public int totalCountOfStudents() {
+        LOGGER.debug("Method totalCountOfStudents was invoked");
         return studentRepository.totalCountOfStudents();
     }
 
     public double averageAgeOfStudents() {
+        LOGGER.debug("Method averageAgeOfStudents was invoked");
         return studentRepository.averageAgeOfStudents();
     }
 
     public List<StudentRecord> lastStudents(int count) {
+        LOGGER.debug("Method lastStudents was invoked");
         return studentRepository.lastStudents(count).stream()
                 .map(recordMapper::toRecord)
                 .collect(Collectors.toList());
