@@ -23,12 +23,11 @@ import java.util.stream.Stream;
 public class StudentService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StudentService.class);
-    @Value("{avatars.dir.path}")
-    private String avatarsDir;
-
     private final StudentRepository studentRepository;
     private final FacultyRepository facultyRepository;
     private final RecordMapper recordMapper;
+    @Value("{avatars.dir.path}")
+    private String avatarsDir;
 
     public StudentService(StudentRepository studentRepository, FacultyRepository facultyRepository, RecordMapper recordMapper) {
         this.studentRepository = studentRepository;
@@ -118,5 +117,45 @@ public class StudentService {
                 .mapToDouble(Student::getAge)
                 .average()
                 .orElse(0);
+    }
+
+    public void getAllStudentsInThreeThreads() {
+        LOGGER.debug("Method getAllStudentsWithThreads was invoked");
+        List<Student> students = studentRepository.findAll();
+        printStudent(students.get(0));
+        printStudent(students.get(1));
+
+        new Thread(() -> {
+            printStudent(students.get(2));
+            printStudent(students.get(3));
+        }).start();
+
+        new Thread(() -> {
+            printStudent(students.get(4));
+            printStudent(students.get(5));
+        }).start();
+    }
+
+    public void getAllStudentsInThreeSynchronizedThreads() {
+        LOGGER.debug("Method getAllStudentsWithSynchronizedThreads was invoked");
+        List<Student> students = studentRepository.findAll();
+        printStudentSynchronized(students.get(0), students.get(1));
+
+        new Thread(() -> {
+            printStudentSynchronized(students.get(2), students.get(3));
+        }).start();
+
+        new Thread(() -> {
+            printStudentSynchronized(students.get(4), students.get(5));
+        }).start();
+    }
+
+    public void printStudent(Student student) {
+        System.out.println(student.getName());
+    }
+
+    public synchronized void printStudentSynchronized(Student student, Student student2) {
+        System.out.println(student.getName());
+        System.out.println(student2.getName());
     }
 }

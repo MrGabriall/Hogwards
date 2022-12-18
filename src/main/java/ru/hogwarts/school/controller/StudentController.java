@@ -1,5 +1,6 @@
 package ru.hogwarts.school.controller;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school.record.FacultyRecord;
@@ -81,5 +82,17 @@ public class StudentController {
     @GetMapping("/findStudentAverageAge")
     public Double findStudentAverageAge(){
         return studentService.findStudentAverageAge();
+    }
+
+    @GetMapping("/getAllStudentsInThree")
+    public ResponseEntity<Void> getAllStudentsInThreeThreads() {
+        studentService.getAllStudentsInThreeThreads();
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/getAllStudentsInThreeSynchronizedThreads")
+    public ResponseEntity<Void> getAllStudentsInThreeSynchronizedThreads() {
+        studentService.getAllStudentsInThreeSynchronizedThreads();
+        return ResponseEntity.ok().build();
     }
 }
