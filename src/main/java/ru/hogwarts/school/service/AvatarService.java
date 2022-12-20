@@ -1,5 +1,7 @@
 package ru.hogwarts.school.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.util.Pair;
@@ -25,6 +27,7 @@ import java.util.stream.Collectors;
 @Service
 public class AvatarService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(AvatarService.class);
     @Value("${application.avatar.store}")
     private String avatarDir;
     private final AvatarRepository avatarRepository;
@@ -41,6 +44,7 @@ public class AvatarService {
 
     public AvatarRecord create(MultipartFile multipartFile,
                                long studentId) throws IOException {
+        LOGGER.debug("Method create was invoked");
         Student student = studentRepository.findById(studentId).orElseThrow(() -> new StudentNotFoundException(studentId));
         byte[] data = multipartFile.getBytes();
 
@@ -63,16 +67,19 @@ public class AvatarService {
     }
 
     public Pair<byte[], String> readFromDb(long id){
+        LOGGER.debug("Method readFromDb was invoked");
         Avatar avatar = avatarRepository.findById(id).orElseThrow(() -> new AvatarNotFoundException(id));
         return Pair.of(avatar.getData(), avatar.getMediaType());
     }
 
     public Pair<byte[], String> readFromFs(long id) throws IOException {
+        LOGGER.debug("Method readFromFs was invoked");
         Avatar avatar = avatarRepository.findById(id).orElseThrow(() -> new AvatarNotFoundException(id));
         return Pair.of(Files.readAllBytes(Paths.get(avatar.getFilePath())), avatar.getMediaType());
     }
 
     public List<AvatarRecord> findByPagination(int page, int size) {
+        LOGGER.debug("Method findByPagination was invoked");
         return avatarRepository.findAll(PageRequest.of(page, size)).get()
                 .map(recordMapper::toRecord)
                 .collect(Collectors.toList());

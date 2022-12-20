@@ -1,5 +1,6 @@
 package ru.hogwarts.school.controller;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school.record.FacultyRecord;
@@ -11,6 +12,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/student")
@@ -70,5 +72,27 @@ public class StudentController {
     @GetMapping("/lstStudents")
     public List<StudentRecord> lastStudents(@RequestParam @Min(1) @Max(5) int count){
         return studentService.lastStudents(count);
+    }
+
+    @GetMapping("/findStudentNamesWhichStartedWithA")
+    public Stream<String> findStudentNamesWhichStartedWithA(){
+        return studentService.findStudentNamesWhichStartedWithA();
+    }
+
+    @GetMapping("/findStudentAverageAge")
+    public Double findStudentAverageAge(){
+        return studentService.findStudentAverageAge();
+    }
+
+    @GetMapping("/getAllStudentsInThree")
+    public ResponseEntity<Void> getAllStudentsInThreeThreads() {
+        studentService.getAllStudentsInThreeThreads();
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/getAllStudentsInThreeSynchronizedThreads")
+    public ResponseEntity<Void> getAllStudentsInThreeSynchronizedThreads() {
+        studentService.getAllStudentsInThreeSynchronizedThreads();
+        return ResponseEntity.ok().build();
     }
 }

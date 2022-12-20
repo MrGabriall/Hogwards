@@ -4,10 +4,6 @@ import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.util.LinkedList;
-import java.util.Objects;
-import java.util.Scanner;
-
 @SpringBootApplication
 @OpenAPIDefinition
 public class SchoolApplication {
